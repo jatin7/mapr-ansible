@@ -1,6 +1,6 @@
 # Version information
-mapr_version: 6.0.0
-mapr_mep_version: 4.0.0
+mapr_version: 6.0.1
+mapr_mep_version: 5.0.0
 
 # Latest EBF patch
 #mapr_patch_ebf_version: <no patch for 5.2.2>
@@ -9,7 +9,7 @@ mapr_mep_version: 4.0.0
 cluster_name: demo.mapr.com
 
 # MapR Filesystem disks
-disks: /dev/xvdb
+disks: /dev/sdb
 #disks: /dev/xvdb,/dev/xvdc,/dev/xvdd
 
 # Memory configuration in warden (options are: low/medium/normal)
@@ -54,12 +54,11 @@ mapr_passwd: mapr
 
 # Streamsets (not installing Streamsets by default. To install set 'streamsets' to yes)
 streamsets: no
-streamsets_version: 3.0.0.0
+streamsets_version: 3.1.3.0
 streamsets_port: 18630
 streamsets_download_location: /tmp/
 streamsets_install_location: /opt/
-streamsets_download_url: http://archives.streamsets.com/datacollector/{{streamsets_version}}/rpm/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms.tgz
-
+streamsets_download_url: http://archives.streamsets.com/datacollector/{{streamsets_version}}/rpm/el7/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms.tar
 streamsets_repo_url: empty
 streamsets_repo_url_local: http://192.168.168.254:1234/archives.streamsets.com/datacollector/{{streamsets_version}}/rpm/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/
 
