@@ -66,6 +66,11 @@ JDK to use (open-jdk/oracle-jdk):
 -e "jdk=oracle-jdk"
 ```
 
+Install MapR Monitoring (metrics/full)
+```
+-e "monitoring=metrics"
+```
+
 Install Streamsets (false/true):
 ```
 -e "streamsets=false"
