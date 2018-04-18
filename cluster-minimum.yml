@@ -1,7 +1,7 @@
-# - name: check local
-#   hosts: managementnode
-#   roles:
-#     - common-preinstall-checks
+- name: check local
+  hosts: managementnode
+  roles:
+    - common-preinstall-checks
 - name: Apply MapR pre-requisite configuration to all nodes
   hosts: mapr-core
   roles:
