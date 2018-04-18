@@ -66,8 +66,6 @@
   roles:
     - {role: mapr-configure-unsecure, when: secure == 'no'}
     - {role: mapr-configure-secure, when: secure == 'yes'}
-    - mapr-configure-unsecure
-
 
 # - name: Restarting mapr-zookeeper
 #   hosts: mapr-zookeeper
