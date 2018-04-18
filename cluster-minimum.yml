@@ -60,8 +60,8 @@
 - name: Configure and start
   hosts: mapr-core
   roles:
-    - {role: mapr-configure-unsecure, when: secure == 'no'}
-    - {role: mapr-configure-secure, when: secure == 'yes'}
+    - {role: mapr-configure-unsecure, when: secure == 'false'}
+    - {role: mapr-configure-secure, when: secure == 'true'}
 
 # - name: Restarting mapr-zookeeper
 #   hosts: mapr-zookeeper

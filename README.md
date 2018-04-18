@@ -49,9 +49,9 @@ Set MapR memory (low/medium/normal):
 -e "memory=medium"
 ```
 
-Deploy a secure MapR cluster (yes/no):
+Deploy a secure MapR cluster (false/true):
 ```
--e "secure=no"
+-e "secure=false"
 ```
 
 Set additional MapR options like disks and clustername:
@@ -60,15 +60,21 @@ Set additional MapR options like disks and clustername:
 -e "cluster_name=demo.mapr.com"
 ```
 
-Install Streamsets:
+JDK to use (open-jdk/oracle-jdk):
 ```
--e "streamsets=yes"
+-e "jdk=open-jdk"
+-e "jdk=oracle-jdk"
+```
+
+Install Streamsets (false/true):
+```
+-e "streamsets=false"
 ```
 
 
 #### Launch Ansible scripts:
 Example playbook command deploying a single secure node cluster with low memory config with no ecosystem packages:
 ```
-ansible-playbook -i myhosts/1node_cluster cluster-minimum.yml -e "memory=low" -e "secure=yes"
+ansible-playbook -i myhosts/1node_cluster cluster-minimum.yml -e "memory=low" -e "secure=true"
 ```
 
