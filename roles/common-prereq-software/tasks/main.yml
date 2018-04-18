@@ -1,11 +1,6 @@
 ---
 # Install MapR Pre-requisites software packages
 
-  # Enable extra repo for Docker installation on AWS
-  - name: Enable extra repo for Docker installation on AWS
-    shell: "yum-config-manager --enable rhui-REGION-rhel-server-extras"
-    ignore_errors: yes
-
   - name: Install libselinux-python tools
     yum: name=libselinux-python state=present
 
@@ -55,6 +50,12 @@
   - name: Install EPEL on CentOS v7.x on Amazon EC2
     yum: name=http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=installed
     when: ansible_lsb.major_release|int == 7 and amazon_ec2_node.stdout == '1'
+
+  # Enable extra repo for Docker installation on AWS
+  - name: Enable extra repo for Docker installation on AWS
+    shell: "yum-config-manager --enable rhui-REGION-rhel-server-extras"
+    when: amazon_ec2_node.stdout == '1'
+    ignore_errors: yes
 
   - name: Install NTP
     yum: name=ntp state=present
