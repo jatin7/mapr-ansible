@@ -75,6 +75,7 @@ Install Streamsets (false/true):
 #### Launch Ansible scripts:
 Example playbook command deploying a single secure node cluster with low memory config with no ecosystem packages:
 ```
+export ANSIBLE_HOST_KEY_CHECKING=False
 ansible-playbook -i myhosts/1node_cluster cluster-minimum.yml -e "memory=low" -e "secure=true"
 ```
 
