@@ -1,0 +1,176 @@
+# Bootcamp Cluster Node definition for TRAINER node
+
+########################################################################################################################
+#  NODE DEFINITION - BEGIN
+########################################################################################################################
+
+
+[bootcamp-trainer-nodes]
+trainer.mapr.com ansible_host=172.16.4.47 ansible_user=root ansible_become=yes ansible_become_method=sudo
+
+[bootcamp-attendee-nodes]
+demo01.mapr.com ansible_host=172.16.4.82 ansible_user=root ansible_become=yes ansible_become_method=sudo
+
+########################################################################################################################
+#  NODE DEFINITION - END
+########################################################################################################################
+
+
+# MapR Installer - probe
+[mapr-installer:children]
+bootcamp-trainer-nodes
+
+# Core
+[mapr-core:children]
+bootcamp-trainer-nodes
+
+# Zookeeper
+[mapr-zookeeper:children]
+bootcamp-trainer-nodes
+
+# Container Location Database
+[mapr-cldb:children]
+bootcamp-trainer-nodes
+
+# MapR Control System
+[mapr-mcs:children]
+bootcamp-trainer-nodes
+
+# MapR Fileserver
+[mapr-fileserver:children]
+bootcamp-trainer-nodes
+
+# NFS
+[mapr-nfs:children]
+bootcamp-trainer-nodes
+
+# Apache Drill
+[mapr-drill:children]
+bootcamp-trainer-nodes
+
+# CollectD
+[mapr-collectd:children]
+bootcamp-trainer-nodes
+
+# OpenTSDB
+[mapr-opentsdb:children]
+bootcamp-trainer-nodes
+
+# Grafana
+[mapr-grafana:children]
+bootcamp-trainer-nodes
+
+# FluentD
+[mapr-fluentd:children]
+bootcamp-trainer-nodes
+
+# ElasticSearch
+[mapr-elasticsearch:children]
+bootcamp-trainer-nodes
+
+# Kibana
+[mapr-kibana:children]
+bootcamp-trainer-nodes
+
+###############################################################
+
+
+# Gateway for Streams and MapR-DB
+[mapr-gateway:children]
+bootcamp-trainer-nodes
+
+# YARN resource manager
+[mapr-resourcemanager:children]
+bootcamp-trainer-nodes
+
+# YARN Node Manager
+[mapr-nodemanager:children]
+bootcamp-trainer-nodes
+
+# Job History Server, IMPORTANT: only one
+[mapr-historyserver:children]
+
+# MySQL, required for Hive MetaStore and Oozie, IMPORTANT: only one
+[ext-mysql:children]
+
+# Spark on YARN
+[mapr-spark-yarn:children]
+bootcamp-trainer-nodes
+
+# Spark HistoryServer
+[mapr-spark-historyserver:children]
+bootcamp-trainer-nodes
+
+# Flume
+[mapr-flume:children]
+
+# Hcontrolnodes CLI
+[mapr-hcontrolnodes-cli:children]
+
+# Hcontrolnodes REST and Thrift
+[mapr-hcontrolnodes-thrift-rest:children]
+
+# Hive CLI
+[mapr-hive-cli:children]
+
+# Hive Meta Store
+[mapr-hive-metastore:children]
+
+# Hive Server2
+[mapr-hive-server2:children]
+
+# Hive HCatalog
+[mapr-hive-hcatalog:children]
+
+# Hive WebHCat
+[mapr-hive-webhcat:children]
+
+# HttpFS
+[mapr-httpfs:children]
+bootcamp-trainer-nodes
+
+# Hue, not yet supported
+[mapr-hue:children]
+
+# Mahout
+[mapr-mahout:children]
+
+# Sqoop2 Server
+[mapr-sqoop2-server:children]
+
+# Sqoop2 Client
+[mapr-sqoop2-client:children]
+
+# Pig
+[mapr-pig:children]
+
+# Oozie
+[mapr-oozie:children]
+
+#############################################
+###          Third Party Solutions        ###
+#############################################
+
+# Streamsets
+[thirdparty-streamsets:children]
+bootcamp-trainer-nodes
+
+# Docker
+[thirdparty-docker:children]
+bootcamp-trainer-nodes
+
+#############################################
+###          Bootcamp deployments         ###
+#############################################
+
+# Bootcamp fundamental nodes
+[bootcamp-fundamentals:children]
+bootcamp-trainer-nodes
+
+# Bootcamp trainer nodes
+[bootcamp-trainer:children]
+bootcamp-trainer-nodes
+
+# Bootcamp attendee nodes
+[bootcamp-attendee:children]
+bootcamp-attendee-nodes

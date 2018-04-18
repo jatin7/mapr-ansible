@@ -1,0 +1,8 @@
+---
+# Restart  Warden
+- name: Restart MapR Warden
+  service: name=mapr-warden state=restarted enabled=yes
+- pause: seconds=120
+
+- debug:
+    msg: "Finished restarting warden."

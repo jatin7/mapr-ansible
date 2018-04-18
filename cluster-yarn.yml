@@ -1,0 +1,18 @@
+## Run minimum playbook first
+- import_playbook: cluster-minimum.yml
+
+## Install MapR Eco-system components
+- name: Install YARN Resource Manager
+  hosts: mapr-resourcemanager
+  roles:
+    - mapr-resourcemanager
+- name: Install YARN Node Manager(s)
+  hosts: mapr-nodemanager
+  roles:
+    - mapr-nodemanager
+
+## Run configure.sh
+- name: Run configure.sh -R for Eco-system component configuration
+  hosts: mapr-core
+  roles:
+    - mapr-configure-components

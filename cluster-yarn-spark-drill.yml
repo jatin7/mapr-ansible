@@ -1,0 +1,14 @@
+## Run minimum playbook first
+- import_playbook: cluster-yarn-spark.yml
+
+## Install MapR Eco-system components
+- name: Install Drill
+  hosts: mapr-drill
+  roles:
+    - mapr-drill
+
+## Run configure.sh
+- name: Run configure.sh -R for Eco-system component configuration
+  hosts: mapr-core
+  roles:
+    - mapr-configure-components

@@ -1,0 +1,130 @@
+---
+   # Set pre-requisites for Streamsets
+   - name: Set ulimit for open files to 63536 for current session
+     shell: ulimit -n 63536
+
+   - name: Set hard ulimit for open files to 63536
+     vars:
+       ulimit: '* hard nofile 63536'
+     lineinfile: dest=/etc/security/limits.conf line='{{ulimit}}' state=present
+
+   - name: Set soft ulimit for open files to 63536
+     vars:
+       ulimit: '* soft nofile 63536'
+     lineinfile: dest=/etc/security/limits.conf line='{{ulimit}}' state=present
+
+   - name: Set ulimit in sysctl
+     sysctl:
+      name: fs.file-max
+      value: 63536
+      sysctl_set: yes
+      state: present
+      reload: yes
+
+   # # Check if Streamsets already installed
+   # - name: Check if Streamsets is already installed
+   #   stat: path=/usr/bin/streamsets
+   #   register: streamsetsinstalled
+
+   # Download Streamsets from local repo (using wget as get_url doesn't support recursive downloads)
+   - name: Download Streamsets RPM's from local repo
+     shell: wget -r -nc --no-parent -nH --cut-dirs=100 {{ streamsets_repo_url }} -P {{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/
+     when: streamsets_repo_url != 'empty'
+
+   # Download Streamsets tarbal
+   - name: Download Streamsets (might take some time as it is a 3GB download)
+     get_url:
+       url: "{{streamsets_download_url}}"
+       dest: "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms.tgz"
+       timeout: 900
+     when: streamsets_repo_url == 'empty'
+
+   - name: Extract Streamsets
+     unarchive: src="{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms.tgz" dest="{{streamsets_download_location}}" copy=no
+     when: streamsets_repo_url == 'empty'
+
+   - name: Remove all non-relevant Streamsets origins/destinations
+     #file: path="{{item}}" state=absent
+     #with_fileglob:
+     shell: rm -rf {{item}}
+     with_items:
+       - "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/streamsets-datacollector-cdh*.rpm"
+       - "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/streamsets-datacollector-hdp*.rpm"
+       - "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/streamsets-datacollector-apache-kudu*.rpm"
+       - "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/streamsets-datacollector-apache-kafka_0_10-lib-3.0.0.0-1.noarch.rpm"
+       - "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/streamsets-datacollector-apache-kafka_0_11-lib-3.0.0.0-1.noarch.rpm"
+       - "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/streamsets-datacollector-apache-kafka_1*.rpm"
+       #- "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/streamsets-datacollector-apache-kafka*.rpm"
+       #- "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms.tgz"
+     #when: streamsetsinstalled.stat.exists == false
+
+   - name: Install Streamsets Datacollector
+     yum:
+       name: "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/streamsets-datacollector-{{streamsets_version}}-1.noarch.rpm"
+       state: present
+
+   - name: Install Streamsets Datacollector origins/destinations - make a list of all RPM's
+     find:
+       paths: "{{streamsets_download_location}}/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/"
+       patterns: "*.rpm"
+     register: rpm_result
+     #when: streamsetsinstalled.stat.exists == false
+
+   - name: Install Streamsets Datacollector origins/destinations - install all RPM's
+     yum:
+       name: "{{ item.path }}"
+       state: present
+     with_items: "{{ rpm_result.files }}"
+     #when: streamsetsinstalled.stat.exists == false
+
+   # Once installed, configure Streamsets for use with MapR
+   - name: Configure Streamsets for use with MapR v{{mapr_version}} and MEP v{{mapr_mep_version[:1]}}
+     shell: "streamsets setup-mapr > /tmp/streamsets-setup-mapr.log"
+     args:
+       chdir: /opt/streamsets-datacollector/bin/
+     environment:
+       SDC_HOME: "/opt/streamsets-datacollector"
+       SDC_DIST: "/opt/streamsets-datacollector"
+       SDC_CONF: "/etc/sdc"
+       MAPR_VERSION: "{{mapr_version}}"
+       MAPR_MEP_VERSION: "{{mapr_mep_version[:1]}}"
+       MAPR_HOME: "/opt/mapr"
+       SDC_ALLOW_UNSUPPORTED_JDK: "true"
+
+   # # Configure http proxy if required
+   # - name: Configure http proxy if required
+   #   vars:
+   #     streamsets_proxy_config: 'export SDC_JAVA_OPTS=" -Dhttp.proxyHost={{proxy_url}} -Dhttp.proxyPort={{proxy_port}} ${SDC_JAVA_OPTS}"'
+   #   lineinfile: path=/opt/streamsets-datacollector/libexec/sdcd-env.sh line='{{ streamsets_proxy_config }}' state=present
+   #   when: proxy == True
+
+   - name: Make user 'sdc' (Streamsets) part of the 'wheel' group
+     user:
+       name: sdc
+       shell: /bin/bash
+       groups: wheel
+       append: yes
+
+   # Launch Streamsets service sdc
+   - name: Start the Streamsets Datacollector service (sdc)
+     service:
+       name: sdc
+       state: restarted
+       enabled: yes
+       use: service
+
+   # Once installed, configure Streamsets for use with MapR
+   - name: Configure Streamsets for use with MapR v{{mapr_version}} and MEP v{{mapr_mep_version[:1]}}
+     lineinfile:
+       path: /etc/rc.d/rc.local
+       line: "export SDC_HOME=/opt/streamsets-datacollector/ && export SDC_DIST=/opt/streamsets-datacollector/ && export SDC_CONF=/etc/sdc/ && export MAPR_VERSION={{mapr_version}} && export MAPR_MEP_VERSION={{mapr_mep_version[:1]}} && export MAPR_HOME=/opt/mapr && export SDC_ALLOW_UNSUPPORTED_JDK=true && /opt/streamsets-datacollector/bin/streamsets setup-mapr"
+       state: present
+
+   - name: Auto launch Streamsets
+     lineinfile: path=/etc/rc.d/rc.local line='service sdc restart' state=present
+
+   - name: Auto launch Streamsets
+     file: path=/etc/rc.d/rc.local mode=755
+
+   - name: Configure Streamsets and restart it
+     shell: bash /etc/rc.d/rc.local

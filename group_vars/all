@@ -1,0 +1,75 @@
+# Version information
+mapr_version: 6.0.0
+mapr_mep_version: 4.0.0
+
+# Latest EBF patch
+#mapr_patch_ebf_version: <no patch for 5.2.2>
+
+# MapR Cluster Name
+cluster_name: demo.mapr.com
+
+# MapR Filesystem disks
+disks: /dev/xvdb
+#disks: /dev/xvdb,/dev/xvdc,/dev/xvdd
+
+# Memory configuration in warden (options are: low/medium/normal)
+memory: normal
+
+# JDK choose: open-jdk or oracle-jdk
+jdk: open-jdk
+oracle_jdk_url: http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.rpm
+
+# MapR Repository
+mapr_repository_url: http://package.mapr.com/releases
+mapr_release_url:    http://package.mapr.com/releases/v{{mapr_version}}
+mapr_mep_url:        http://package.mapr.com/releases/MEP/MEP-{{mapr_mep_version}}
+mapr_patch_url:      http://package.mapr.com/patches/releases/v{{mapr_version}}
+mapr_ecosystem_url:  http://package.mapr.com/releases/ecosystem-5.x
+mapr_gpg_url:        http://package.mapr.com/releases/pub/maprgpg.key
+
+mapr_patch_ebf_url:  http://package.mapr.com/patches/releases/v{{mapr_version}}/redhat/mapr-patch-{{mapr_version}}.{{mapr_patch_ebf_version}}.x86_64.rpm
+
+# Local MapR Repository
+mapr_repository_url_local: http://192.168.168.254:1234/package.mapr.com/releases
+mapr_release_url_local:    http://192.168.168.254:1234/package.mapr.com/releases/v{{mapr_version}}
+mapr_mep_url_local:        http://192.168.168.254:1234/package.mapr.com/releases/MEP/MEP-{{mapr_mep_version}}
+
+# Are we behind a proxy
+proxy: no
+proxy_url: 172.16.4.20
+proxy_port: 3128
+proxy_http_url: http://{{proxy_url}}:{{proxy_port}}
+proxy_https_url: "{{proxy_http_url}}"
+
+proxy_env:
+  http_proxy: "{{proxy_http_url}}"
+  https_proxy: "{{proxy_https_url}}"
+
+# MapR User & Group details
+mapr_group: mapr
+mapr_group_gid: 5000
+mapr_user: mapr
+mapr_user_uid: 5000
+mapr_passwd: mapr
+
+# Streamsets (not installing Streamsets by default. To install set 'streamsets' to yes)
+streamsets: no
+streamsets_version: 3.0.0.0
+streamsets_port: 18630
+streamsets_download_location: /tmp/
+streamsets_install_location: /opt/
+streamsets_download_url: http://archives.streamsets.com/datacollector/{{streamsets_version}}/rpm/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms.tgz
+
+streamsets_repo_url: empty
+streamsets_repo_url_local: http://192.168.168.254:1234/archives.streamsets.com/datacollector/{{streamsets_version}}/rpm/streamsets-datacollector-{{streamsets_version}}-el7-all-rpms/
+
+# Zeppelin
+zeppelin_version: 0.7.3
+zeppelin_port: 8181
+zeppelin_download_location: /tmp/
+zeppelin_install_location: /opt/
+zeppelin_download_url: http://ftp.tudelft.nl/apache/zeppelin/zeppelin-{{zeppelin_version}}/zeppelin-{{zeppelin_version}}-bin-all.tgz
+
+# Zeppelin notebooks for hands-on labs
+zeppelin_notebook_1: bootcamp-dataset/zeppelin_notebook_in_dsr/Bootcamp-3-Spark_Introduction.json
+#zeppelin_notebook_2

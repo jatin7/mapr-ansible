@@ -1,0 +1,24 @@
+---
+# Install Apache Drill
+
+# Redhat / CentOS
+- name: Install mapr-drill (Redhat / CentOS)
+  yum: name=mapr-drill state=present
+  when: ansible_os_family == 'RedHat'
+# Debian / Ubuntu
+- name: Install mapr-drill (Debian / Ubuntu)
+  apt: name=mapr-drill state=present allow_unauthenticated=yes
+  when: ansible_os_family == 'Debian'
+# Suse
+- name: Install mapr-drill (Suse)
+  zypper: name=mapr-drill state=present
+  when: ansible_os_family == 'Suse'
+
+# Implement workaround for DRILL-5698
+# https://issues.apache.org/jira/browse/DRILL-5698
+- name: Implement workaround for DRILL-5698
+  shell: sed -ie "s|1\.4\|1.5\|1.6|1\\\.4\|1\\\.5\|1\\\.6|g" /opt/mapr/drill/drill-*/bin/drill-config.sh
+
+# Other actions
+- name: Set owner mapr-system user
+  file: path=/opt/mapr/drill owner={{ mapr_user }} group={{ mapr_group }} state=directory recurse=yes

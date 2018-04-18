@@ -1,0 +1,19 @@
+## Run yarn playbook first
+- import_playbook: cluster-yarn.yml
+
+
+## Install MapR Eco-system components
+- name: Install Spark on YARN
+  hosts: mapr-spark-yarn
+  roles:
+    - mapr-spark-yarn
+- name: Install Spark History Server
+  hosts: mapr-spark-historyserver
+  roles:
+    - mapr-spark-historyserver
+
+## Run configure.sh
+- name: Run configure.sh -R for Eco-system component configuration
+  hosts: mapr-core
+  roles:
+    - mapr-configure-components
