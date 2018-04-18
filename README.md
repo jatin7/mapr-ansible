@@ -41,4 +41,34 @@ Please validate the MapR OS Support Matrix prior to deployment:
 http://maprdocs.mapr.com/home/InteropMatrix/r_os_matrix.html
 
 #### Configuration options
+The ansible-playbook command can be extended with the following additional configuration parameters:
+
+Set MapR memory (low/medium/normal):
+```
 -e "memory=low"
+-e "memory=medium"
+```
+
+Deploy a secure MapR cluster (yes/no):
+```
+-e "secure=no"
+```
+
+Set additional MapR options like disks and clustername:
+```
+-e "disks=/dev/xvdb"
+-e "cluster_name=demo.mapr.com"
+```
+
+Install Streamsets:
+```
+-e "streamsets=yes"
+```
+
+
+#### Launch Ansible scripts:
+Example playbook command deploying a single secure node cluster with low memory config with no ecosystem packages:
+```
+ansible-playbook -i myhosts/1node_cluster cluster-minimum.yml -e "memory=low" -e "secure=yes"
+```
+
