@@ -12,6 +12,9 @@ cluster_name: demo.mapr.com
 disks: /dev/sdb
 #disks: /dev/xvdb,/dev/xvdc,/dev/xvdd
 
+# MapR secure cluster (options are: yes/no)
+secure: no
+
 # Memory configuration in warden (options are: low/medium/normal)
 memory: normal
 
